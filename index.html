@@ -1,1 +1,428 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Vapor Shop — Catálogo</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700;900&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#06060e; --card:#0f0f1c; --card2:#13132a;
+  --neon:#00cfff; --hot:#ff3e6c; --gold:#ffd166; --green:#64dc32;
+  --muted:rgba(255,255,255,0.35);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:#fff;font-family:'Rajdhani',sans-serif;min-height:100vh;overflow-x:hidden;user-select:none;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse 80% 50% at 20% -5%,rgba(0,150,255,0.15) 0%,transparent 55%),radial-gradient(ellipse 60% 40% at 85% 105%,rgba(180,0,255,0.12) 0%,transparent 50%);pointer-events:none;z-index:0;}
+.stars{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
+.star{position:absolute;border-radius:50%;background:#fff;animation:twinkle var(--d) ease-in-out infinite alternate;opacity:0;}
+@keyframes twinkle{from{opacity:0;transform:scale(0.8)}to{opacity:var(--op);transform:scale(1.2)}}
+.scanline{position:fixed;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(0,207,255,0.4),transparent);animation:scan 5s linear infinite;z-index:0;pointer-events:none;}
+@keyframes scan{from{top:0}to{top:100vh}}
 
+.app{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;}
+.screen{display:none;flex-direction:column;align-items:center;min-height:100vh;}
+.screen.active{display:flex;animation:fadeIn 0.4s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+
+/* HOME */
+.home-header{text-align:center;padding:44px 20px 20px;}
+.home-title{font-family:'Orbitron',monospace;font-size:clamp(11px,3.5vw,16px);letter-spacing:5px;color:var(--muted);text-transform:uppercase;margin-bottom:6px;}
+.home-brand{font-family:'Orbitron',monospace;font-size:clamp(32px,10vw,58px);font-weight:900;letter-spacing:4px;background:linear-gradient(135deg,#fff 0%,var(--neon) 50%,#bf00ff 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
+.home-sub{font-size:14px;color:var(--muted);font-weight:600;letter-spacing:1px;}
+.home-cards{display:flex;flex-direction:column;gap:14px;padding:24px 18px 100px;width:100%;max-width:440px;}
+.prod-card{position:relative;border-radius:22px;border:1px solid rgba(255,255,255,0.07);background:var(--card);cursor:pointer;overflow:hidden;display:flex;align-items:center;gap:16px;padding:14px 18px;transition:all 0.25s ease;}
+.prod-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--accent,rgba(255,255,255,0.3)),transparent);}
+.prod-card:hover{transform:translateY(-3px);border-color:var(--accent,rgba(255,255,255,0.2));box-shadow:0 8px 32px var(--glow,rgba(0,0,0,0.5));}
+.prod-card-img{width:88px;height:96px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 4px 14px var(--glow,rgba(255,255,255,0.3)));transition:transform 0.3s ease;}
+.prod-card:hover .prod-card-img{transform:scale(1.06) rotate(-2deg);}
+.prod-card-info{flex:1;}
+.prod-card-brand{font-family:'Orbitron',monospace;font-size:clamp(13px,4.5vw,19px);font-weight:900;letter-spacing:2px;color:var(--accent,#fff);margin-bottom:2px;}
+.prod-card-model{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;margin-bottom:6px;}
+.prod-card-puffs{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.05);border:1px solid var(--accent,rgba(255,255,255,0.1));border-radius:100px;padding:4px 12px;font-family:'Orbitron',monospace;font-size:10px;font-weight:700;color:var(--accent,#fff);letter-spacing:1px;}
+.prod-card-puffs::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent,#fff);box-shadow:0 0 6px var(--accent,#fff);animation:pulse 1.5s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.4;transform:scale(0.7)}}
+.prod-card-arrow{font-size:20px;color:var(--muted);flex-shrink:0;transition:transform 0.2s;}
+.prod-card:hover .prod-card-arrow{transform:translateX(4px);color:var(--accent,#fff);}
+
+/* SCREEN HEADER */
+.screen-header{width:100%;max-width:440px;display:flex;align-items:center;gap:14px;padding:36px 18px 16px;}
+.back-btn{width:42px;height:42px;border-radius:50%;flex-shrink:0;border:1.5px solid rgba(255,255,255,0.12);background:rgba(255,255,255,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.back-btn:hover{border-color:rgba(255,255,255,0.35);background:rgba(255,255,255,0.1);}
+.back-btn svg{width:18px;height:18px;stroke:#fff;stroke-width:2.5;fill:none;}
+.screen-title-wrap{flex:1;}
+.screen-brand{font-family:'Orbitron',monospace;font-size:clamp(15px,5vw,21px);font-weight:900;letter-spacing:3px;color:var(--accent,#fff);}
+.screen-model{font-size:11px;color:var(--muted);font-weight:700;letter-spacing:1px;}
+
+/* HERO */
+.brand-hero{position:relative;width:160px;height:185px;margin:0 auto 4px;cursor:grab;flex-shrink:0;filter:drop-shadow(0 0 16px var(--accent-glow,rgba(255,255,255,0.4)));}
+.brand-hero:active{cursor:grabbing;}
+.brand-hero-img{width:100%;height:100%;object-fit:contain;transform-origin:center center;pointer-events:none;will-change:transform;animation:holoFlicker 7s ease-in-out infinite;}
+@keyframes holoFlicker{0%,100%{opacity:1}93%{opacity:1}94%{opacity:0.82}95%{opacity:1}97%{opacity:0.9}98%{opacity:1}}
+.brand-hero-glow{position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);width:130px;height:20px;background:radial-gradient(ellipse,var(--accent-glow,rgba(255,255,255,0.4)) 0%,transparent 70%);border-radius:50%;filter:blur(5px);animation:glowPulse 2.5s ease-in-out infinite alternate;}
+@keyframes glowPulse{from{opacity:0.5;transform:translateX(-50%) scaleX(0.9)}to{opacity:1;transform:translateX(-50%) scaleX(1.1)}}
+.holo-lines{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(var(--rgb,0,207,255),0.05) 3px,rgba(var(--rgb,0,207,255),0.05) 4px);animation:holoScan 3s linear infinite;mix-blend-mode:screen;}
+@keyframes holoScan{0%{background-position:0 0;opacity:0.5}50%{opacity:1}100%{background-position:0 80px;opacity:0.5}}
+.drag-hint{text-align:center;font-size:11px;color:rgba(0,207,255,0.5);letter-spacing:1px;font-weight:600;margin-bottom:10px;animation:hintPulse 2s ease-in-out infinite;}
+@keyframes hintPulse{0%,100%{opacity:0.4}50%{opacity:1}}
+
+/* SPECS */
+.specs-row{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;width:100%;max-width:400px;padding:0 18px;margin-bottom:14px;}
+.spec-chip{background:rgba(255,255,255,0.04);border:1px solid rgba(var(--rgb,255,255,255),0.2);border-radius:12px;padding:9px 12px;position:relative;overflow:hidden;}
+.spec-chip::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb,255,255,255),0.5),transparent);}
+.spec-label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:3px;}
+.spec-value{font-size:13px;font-weight:700;color:rgb(var(--rgb,255,255,255));font-family:'Orbitron',monospace;letter-spacing:0.3px;}
+
+/* FLAVORS */
+.flavor-section{width:100%;max-width:400px;padding:0 18px;}
+.flavor-section h3{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-bottom:12px;padding-left:2px;}
+.flavors-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.flavor-btn{position:relative;padding:12px 13px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.07);background:var(--card);cursor:pointer;text-align:left;transition:all 0.2s ease;color:#fff;font-family:'Rajdhani',sans-serif;overflow:hidden;}
+.flavor-btn:hover{border-color:rgba(255,255,255,0.2);transform:translateY(-2px);}
+.flavor-btn.selected{border-color:var(--accent,var(--neon));background:rgba(255,255,255,0.06);box-shadow:0 4px 20px var(--accent-glow,rgba(0,207,255,0.2));}
+.flavor-btn.selected::after{content:'✓';position:absolute;top:7px;right:9px;font-size:11px;font-weight:900;color:var(--accent,var(--neon));}
+.flavor-emoji{font-size:20px;margin-bottom:5px;display:block;}
+.flavor-name{font-size:11px;font-weight:800;line-height:1.3;text-transform:uppercase;letter-spacing:0.5px;}
+
+/* CTA */
+.cta-section{width:100%;max-width:400px;padding:14px 18px 0;}
+.selected-display{background:var(--card2);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:13px 16px;margin-bottom:12px;min-height:52px;display:flex;align-items:center;gap:12px;}
+.sel-icon{font-size:24px;flex-shrink:0;}
+.sel-info{flex:1;}
+.sel-label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1.5px;}
+.sel-value{font-size:14px;font-weight:900;}
+.whatsapp-btn{width:100%;padding:15px;border-radius:15px;border:none;background:linear-gradient(135deg,#25d366,#128c7e);color:#fff;font-family:'Rajdhani',sans-serif;font-size:16px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;transition:all 0.2s;letter-spacing:1px;box-shadow:0 8px 28px rgba(37,211,102,0.3);}
+.whatsapp-btn:hover{transform:translateY(-2px);box-shadow:0 12px 36px rgba(37,211,102,0.45);}
+.whatsapp-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;box-shadow:none;}
+.whatsapp-btn svg{width:20px;height:20px;fill:white;flex-shrink:0;}
+.divider{height:1px;background:rgba(255,255,255,0.05);width:100%;max-width:400px;margin:16px 0 14px;}
+.bottom-space{height:50px;}
+
+/* RIFBAR */
+.carousel-wrapper{width:100%;max-width:440px;overflow:hidden;}
+.carousel-track{display:flex;transition:transform 0.45s cubic-bezier(0.25,0.46,0.45,0.94);}
+.rif-slide{flex:0 0 100%;display:flex;flex-direction:column;align-items:center;padding:0 18px;}
+.dots-nav{display:flex;gap:9px;margin:12px 0 2px;align-items:center;justify-content:center;}
+.dot{width:9px;height:9px;border-radius:50%;border:2px solid rgba(255,255,255,0.25);cursor:pointer;transition:all 0.3s;background:transparent;}
+.dot.active{width:26px;border-radius:100px;border-color:var(--color);background:var(--color);box-shadow:0 0 10px var(--color);}
+.device-scene{position:relative;width:210px;height:265px;cursor:grab;margin:0 auto;filter:drop-shadow(0 0 16px var(--glow-color,rgba(0,207,255,0.6)));}
+.device-scene:active{cursor:grabbing;}
+.device-scene::before{content:'';position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);width:160px;height:24px;background:radial-gradient(ellipse,var(--glow-color,rgba(0,207,255,0.5)) 0%,transparent 70%);border-radius:50%;filter:blur(5px);animation:glowPulse 2s ease-in-out infinite alternate;}
+.device-img{width:100%;height:100%;object-fit:contain;transform-origin:center center;pointer-events:none;will-change:transform;position:relative;z-index:2;filter:drop-shadow(0 0 8px var(--glow-color,rgba(0,207,255,0.8))) drop-shadow(0 0 20px var(--glow-color,rgba(0,207,255,0.4))) brightness(1.15) saturate(1.2);animation:holoFlicker 6s ease-in-out infinite;}
+.device-shine{position:absolute;inset:0;border-radius:20px;pointer-events:none;z-index:4;background:radial-gradient(circle at var(--sx,50%) var(--sy,30%),rgba(255,255,255,0.14) 0%,transparent 60%);mix-blend-mode:screen;}
+.holo-overlay{position:absolute;inset:0;z-index:3;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0px,transparent 3px,rgba(0,207,255,0.04) 3px,rgba(0,207,255,0.04) 4px);animation:holoScan 3s linear infinite;mix-blend-mode:screen;}
+.rif-flavor-card{margin-top:14px;text-align:center;padding:0 8px;animation:fadeIn 0.4s ease;}
+.rif-flavor-number{font-family:'Orbitron',monospace;font-size:10px;letter-spacing:3px;color:var(--muted);margin-bottom:2px;}
+.rif-flavor-name{font-family:'Orbitron',monospace;font-size:clamp(14px,5vw,21px);font-weight:900;letter-spacing:2px;color:var(--color);text-shadow:0 0 20px var(--glow),0 0 40px var(--glow);text-transform:uppercase;margin-bottom:10px;}
+.rif-specs{display:grid;grid-template-columns:1fr 1fr;gap:7px;max-width:320px;margin:0 auto;}
+.rif-spec{background:rgba(255,255,255,0.04);border:1px solid rgba(var(--rgb),0.2);border-radius:11px;padding:8px 10px;position:relative;overflow:hidden;}
+.rif-spec::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(var(--rgb),0.6),transparent);}
+.rif-spec-label{font-size:9px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px;}
+.rif-spec-value{font-size:12px;font-weight:700;color:rgb(var(--rgb));font-family:'Orbitron',monospace;}
+.arrow-nav{display:flex;gap:18px;margin-top:18px;align-items:center;}
+.arrow-btn{width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,0.13);background:rgba(255,255,255,0.05);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;}
+.arrow-btn:hover{border-color:rgba(255,255,255,0.35);transform:scale(1.08);}
+.arrow-btn:disabled{opacity:0.2;cursor:not-allowed;transform:none;}
+.arrow-btn svg{width:20px;height:20px;stroke:#fff;stroke-width:2;fill:none;}
+.slide-counter{font-family:'Orbitron',monospace;font-size:12px;color:var(--muted);letter-spacing:2px;min-width:44px;text-align:center;}
+.rif-cta{width:100%;max-width:400px;padding:18px 18px 50px;}
+
+/* FLOATING LOGO COIN */
+.logo-coin{position:fixed;bottom:22px;right:18px;z-index:999;width:68px;height:68px;cursor:pointer;animation:coinFloat 3.2s ease-in-out infinite;}
+@keyframes coinFloat{0%,100%{transform:translateY(0px)}50%{transform:translateY(-7px)}}
+.logo-mist{position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);width:90px;pointer-events:none;z-index:998;}
+.mist-p{position:absolute;bottom:0;left:50%;width:var(--w);height:var(--h);border-radius:50%;background:radial-gradient(circle,rgba(200,200,220,0.55) 0%,transparent 70%);filter:blur(5px);transform:translateX(-50%);animation:mistRise var(--dur) ease-out infinite;animation-delay:var(--delay);opacity:0;}
+@keyframes mistRise{0%{opacity:0;transform:translateX(calc(-50% + var(--dx))) translateY(0px) scale(0.6)}20%{opacity:0.7}70%{opacity:0.4;transform:translateX(calc(-50% + var(--dx))) translateY(-30px) scale(1.4)}100%{opacity:0;transform:translateX(calc(-50% + var(--dx))) translateY(-52px) scale(1.8)}}
+.coin-inner{width:68px;height:68px;position:relative;animation:coinFlip 3.2s ease-in-out infinite;transform-style:preserve-3d;}
+@keyframes coinFlip{0%{transform:perspective(300px) rotateY(0deg) rotateZ(-4deg)}25%{transform:perspective(300px) rotateY(25deg) rotateZ(2deg)}50%{transform:perspective(300px) rotateY(0deg) rotateZ(4deg)}75%{transform:perspective(300px) rotateY(-25deg) rotateZ(-2deg)}100%{transform:perspective(300px) rotateY(0deg) rotateZ(-4deg)}}
+.coin-face{width:68px;height:68px;border-radius:50%;overflow:hidden;position:relative;box-shadow:0 0 0 2px rgba(212,180,100,0.6),0 0 14px rgba(212,180,100,0.5),0 0 28px rgba(212,180,100,0.25),inset 0 0 10px rgba(0,0,0,0.4);background:radial-gradient(circle at 35% 35%,#d4b964,#8a6a20);}
+.coin-face img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;}
+.coin-face::after{content:'';position:absolute;inset:0;border-radius:50%;background:linear-gradient(135deg,rgba(255,255,200,0.35) 0%,transparent 45%,rgba(255,255,200,0.12) 70%,transparent 100%);animation:coinShine 3.2s ease-in-out infinite;}
+@keyframes coinShine{0%{opacity:0.9}25%{opacity:0.3}50%{opacity:0.8}75%{opacity:0.2}100%{opacity:0.9}}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="scanline"></div>
+
+<div class="app">
+
+<!-- HOME -->
+<div class="screen active" id="screen-home">
+  <div class="home-header">
+    <div class="home-title">Catálogo Oficial</div>
+    <div class="home-brand">VAPOR<br>SHOP</div>
+    <div class="home-sub">Selecciona un producto para ver los sabores</div>
+  </div>
+  <div class="home-cards">
+    <div class="prod-card" style="--accent:#00cfff;--glow:rgba(0,207,255,0.25)" onclick="openMenu('czar')">
+      <img class="prod-card-img" src="czar.png" alt="CZAR" style="--glow:rgba(0,207,255,0.4)">
+      <div class="prod-card-info">
+        <div class="prod-card-brand">CZAR</div>
+        <div class="prod-card-model">CZ9000</div>
+        <div class="prod-card-puffs">9,000 PUFFS</div>
+      </div>
+      <div class="prod-card-arrow">›</div>
+    </div>
+    <div class="prod-card" style="--accent:#64dc32;--glow:rgba(100,220,50,0.25)" onclick="openMenu('crazy')">
+      <img class="prod-card-img" src="crazy.png" alt="CrazyAce" style="--glow:rgba(100,220,50,0.4)">
+      <div class="prod-card-info">
+        <div class="prod-card-brand" style="color:#64dc32">CRAZYACE</div>
+        <div class="prod-card-model">B15000</div>
+        <div class="prod-card-puffs" style="border-color:#64dc32;color:#64dc32">15,000 PUFFS</div>
+      </div>
+      <div class="prod-card-arrow">›</div>
+    </div>
+    <div class="prod-card" style="--accent:#ffd166;--glow:rgba(255,200,80,0.25)" onclick="openMenu('fume')">
+      <img class="prod-card-img" src="fume.png" alt="Fume" style="--glow:rgba(255,200,80,0.4)">
+      <div class="prod-card-info">
+        <div class="prod-card-brand" style="color:#ffd166">FUME</div>
+        <div class="prod-card-model">RECHARGE 5000</div>
+        <div class="prod-card-puffs" style="border-color:#ffd166;color:#ffd166">5,000 PUFFS</div>
+      </div>
+      <div class="prod-card-arrow">›</div>
+    </div>
+    <div class="prod-card" style="--accent:#bf00ff;--glow:rgba(180,0,255,0.25)" onclick="openRifbar()">
+      <img class="prod-card-img" src="rif0.png" alt="RIFBAR" style="filter:drop-shadow(0 4px 14px rgba(0,207,255,0.5))">
+      <div class="prod-card-info">
+        <div class="prod-card-brand" style="color:#00cfff">RIFBAR</div>
+        <div class="prod-card-model">MIXPRO 40K</div>
+        <div class="prod-card-puffs" style="border-color:#bf00ff;color:#bf00ff">40,000 PUFFS</div>
+      </div>
+      <div class="prod-card-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<!-- CZAR -->
+<div class="screen" id="screen-czar" style="--accent:#00cfff;--accent-glow:rgba(0,207,255,0.5);--rgb:0,207,255">
+  <div class="screen-header">
+    <div class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="screen-title-wrap"><div class="screen-brand">CZAR</div><div class="screen-model">CZ9000 · 9,000 Puffs</div></div>
+  </div>
+  <div class="brand-hero" id="hero-czar">
+    <img class="brand-hero-img" id="himg-czar" src="czar.png" alt="CZAR">
+    <div class="holo-lines" style="--rgb:0,207,255"></div><div class="brand-hero-glow"></div>
+  </div>
+  <div class="drag-hint">↔ Arrastra para girar</div>
+  <div class="specs-row" style="--rgb:0,207,255">
+    <div class="spec-chip"><div class="spec-label">E-Líquido</div><div class="spec-value">17 mL</div></div>
+    <div class="spec-chip"><div class="spec-label">Batería</div><div class="spec-value">600 mAh</div></div>
+    <div class="spec-chip"><div class="spec-label">Nicotina</div><div class="spec-value">5% (50mg)</div></div>
+    <div class="spec-chip"><div class="spec-label">Carga</div><div class="spec-value">USB-C</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="flavor-section"><h3>Elige tu sabor</h3><div class="flavors-grid" id="fl-czar"></div></div>
+  <div class="cta-section">
+    <div class="selected-display" id="sel-czar">
+      <span class="sel-icon">🎯</span>
+      <div class="sel-info"><div class="sel-label">Sabor seleccionado</div><div class="sel-value" style="color:var(--muted)">Ninguno aún</div></div>
+    </div>
+    <button class="whatsapp-btn" id="btn-czar" disabled onclick="sendWA('czar')">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+  <div class="bottom-space"></div>
+</div>
+
+<!-- CRAZYACE -->
+<div class="screen" id="screen-crazy" style="--accent:#64dc32;--accent-glow:rgba(100,220,50,0.5);--rgb:100,220,50">
+  <div class="screen-header">
+    <div class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="screen-title-wrap"><div class="screen-brand" style="color:#64dc32">CRAZYACE</div><div class="screen-model">B15000 · 15,000 Puffs</div></div>
+  </div>
+  <div class="brand-hero" id="hero-crazy">
+    <img class="brand-hero-img" id="himg-crazy" src="crazy.png" alt="CrazyAce">
+    <div class="holo-lines" style="--rgb:100,220,50"></div><div class="brand-hero-glow"></div>
+  </div>
+  <div class="drag-hint" style="color:rgba(100,220,50,0.6)">↔ Arrastra para girar</div>
+  <div class="specs-row" style="--rgb:100,220,50">
+    <div class="spec-chip"><div class="spec-label">Sistema</div><div class="spec-value">Dual Tank</div></div>
+    <div class="spec-chip"><div class="spec-label">Coil</div><div class="spec-value">Dual Mesh</div></div>
+    <div class="spec-chip"><div class="spec-label">Nicotina</div><div class="spec-value">5%</div></div>
+    <div class="spec-chip"><div class="spec-label">Carga</div><div class="spec-value">USB</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="flavor-section"><h3>Elige tu sabor</h3><div class="flavors-grid" id="fl-crazy"></div></div>
+  <div class="cta-section">
+    <div class="selected-display" id="sel-crazy">
+      <span class="sel-icon">🎯</span>
+      <div class="sel-info"><div class="sel-label">Sabor seleccionado</div><div class="sel-value" style="color:var(--muted)">Ninguno aún</div></div>
+    </div>
+    <button class="whatsapp-btn" id="btn-crazy" disabled onclick="sendWA('crazy')">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+  <div class="bottom-space"></div>
+</div>
+
+<!-- FUME -->
+<div class="screen" id="screen-fume" style="--accent:#ffd166;--accent-glow:rgba(255,200,80,0.5);--rgb:255,200,80">
+  <div class="screen-header">
+    <div class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="screen-title-wrap"><div class="screen-brand" style="color:#ffd166">FUME</div><div class="screen-model">RECHARGE 5000 · 5,000 Puffs</div></div>
+  </div>
+  <div class="brand-hero" id="hero-fume">
+    <img class="brand-hero-img" id="himg-fume" src="fume.png" alt="Fume">
+    <div class="holo-lines" style="--rgb:255,200,80"></div><div class="brand-hero-glow"></div>
+  </div>
+  <div class="drag-hint" style="color:rgba(255,200,80,0.6)">↔ Arrastra para girar</div>
+  <div class="specs-row" style="--rgb:255,200,80">
+    <div class="spec-chip"><div class="spec-label">E-Líquido</div><div class="spec-value">11 mL</div></div>
+    <div class="spec-chip"><div class="spec-label">Batería</div><div class="spec-value">700 mAh</div></div>
+    <div class="spec-chip"><div class="spec-label">Nicotina</div><div class="spec-value">5%</div></div>
+    <div class="spec-chip"><div class="spec-label">Carga</div><div class="spec-value">USB-C</div></div>
+  </div>
+  <div class="divider"></div>
+  <div class="flavor-section"><h3>Elige tu sabor</h3><div class="flavors-grid" id="fl-fume"></div></div>
+  <div class="cta-section">
+    <div class="selected-display" id="sel-fume">
+      <span class="sel-icon">🎯</span>
+      <div class="sel-info"><div class="sel-label">Sabor seleccionado</div><div class="sel-value" style="color:var(--muted)">Ninguno aún</div></div>
+    </div>
+    <button class="whatsapp-btn" id="btn-fume" disabled onclick="sendWA('fume')">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir por WhatsApp
+    </button>
+  </div>
+  <div class="bottom-space"></div>
+</div>
+
+<!-- RIFBAR -->
+<div class="screen" id="screen-rifbar">
+  <div class="screen-header">
+    <div class="back-btn" onclick="goHome()"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></div>
+    <div class="screen-title-wrap"><div class="screen-brand" style="color:#00cfff;font-size:clamp(13px,4.5vw,19px)">RIFBAR MIXPRO</div><div class="screen-model">40,000 Puffs · 5 Sabores</div></div>
+  </div>
+  <div class="dots-nav" id="dotsNav"></div>
+  <div class="carousel-wrapper"><div class="carousel-track" id="carouselTrack"></div></div>
+  <div class="arrow-nav">
+    <button class="arrow-btn" id="btnPrev" onclick="navigate(-1)"><svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="slide-counter" id="counter">1 / 5</div>
+    <button class="arrow-btn" id="btnNext" onclick="navigate(1)"><svg viewBox="0 0 24 24"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+  <div class="rif-cta">
+    <button class="whatsapp-btn" onclick="sendRifWA()">
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Pedir este sabor por WhatsApp
+    </button>
+  </div>
+</div>
+
+</div>
+
+<!-- LOGO COIN -->
+<div class="logo-coin" onclick="goHome()">
+  <div class="logo-mist">
+    <div class="mist-p" style="--w:28px;--h:16px;--dur:2.4s;--delay:0s;--dx:-8px"></div>
+    <div class="mist-p" style="--w:22px;--h:14px;--dur:2.8s;--delay:0.6s;--dx:6px"></div>
+    <div class="mist-p" style="--w:32px;--h:18px;--dur:3.1s;--delay:1.1s;--dx:-3px"></div>
+    <div class="mist-p" style="--w:18px;--h:12px;--dur:2.2s;--delay:1.7s;--dx:10px"></div>
+    <div class="mist-p" style="--w:25px;--h:15px;--dur:3.4s;--delay:0.3s;--dx:-12px"></div>
+    <div class="mist-p" style="--w:30px;--h:16px;--dur:2.6s;--delay:2.0s;--dx:4px"></div>
+  </div>
+  <div class="coin-inner">
+    <div class="coin-face"><img src="logo.png" alt="Logo"></div>
+  </div>
+</div>
+
+<script>
+const WA = "63932089";
+const menuData = {
+  czar:  { name:"CZAR CZ9000",        accent:"#00cfff", glow:"rgba(0,207,255,0.5)",   flavors:[{name:"Blue Razz Ice",emoji:"🫐"},{name:"Pineapple Orange Mango",emoji:"🍍"},{name:"Strawberry Watermelon",emoji:"🍓"},{name:"Alaskan Mint",emoji:"🌿"},{name:"Iceberg",emoji:"🧊"},{name:"Strawberry Kiwi",emoji:"🥝"},{name:"Lemon Mint",emoji:"🍋"},{name:"Watermelon Ice",emoji:"🍉"},{name:"Strawberry Banana",emoji:"🍌"},{name:"Triple Berry",emoji:"🫐"},{name:"Peach Ice",emoji:"🍑"},{name:"Cherry Lemon",emoji:"🍒"},{name:"Grape Ice",emoji:"🍇"}]},
+  crazy: { name:"CrazyAce B15000",     accent:"#64dc32", glow:"rgba(100,220,50,0.5)", flavors:[{name:"Strawberry Watermelon",emoji:"🍓"},{name:"Fuji Apple",emoji:"🍎"},{name:"Banana Ice",emoji:"🍌"},{name:"Strawberry Lemonade",emoji:"🍋"},{name:"Watermelon Bubblegum",emoji:"🍉"},{name:"Strawberry Kiwi",emoji:"🥝"},{name:"Fresh Mint",emoji:"🌿"},{name:"Peach Mango",emoji:"🍑"},{name:"Rainbow Burst",emoji:"🌈"},{name:"Blueberry Raspberry Ice",emoji:"🫐"},{name:"Raspberry Watermelon",emoji:"🍇"},{name:"Sakura Grape",emoji:"🌸"},{name:"Pineapple Slush",emoji:"🍍"},{name:"Lush Ice",emoji:"🧊"},{name:"Lemon Pie",emoji:"🥧"}]},
+  fume:  { name:"Fume Recharge 5000",  accent:"#ffd166", glow:"rgba(255,200,80,0.5)", flavors:[{name:"Piñacolada Strawberry",emoji:"🍓"},{name:"Piñacolada Guava",emoji:"🍹"},{name:"Blue Razz",emoji:"🫐"},{name:"Peach Banana",emoji:"🍑"},{name:"Apple Watermelon",emoji:"🍏"},{name:"Watermelon Blueberry",emoji:"🍉"},{name:"Passion Fruit Peach",emoji:"🌺"},{name:"Peach Watermelon",emoji:"🍑"},{name:"Passion Fruit Mango",emoji:"🥭"},{name:"Strawberry Kiwi",emoji:"🥝"},{name:"Blueberry Kiwi Ice",emoji:"🫐"},{name:"Watermelon Strawberry",emoji:"🍓"}]}
+};
+const rifFlavors = [
+  {name:"Blue Razz Ice", tags:["🫐 Arándano","❄️ Ice"], color:"#00cfff",glow:"rgba(0,180,255,0.7)",rgb:"0,207,255",   img:"rif0.png"},
+  {name:"Pink Slushy",   tags:["🩷 Dulce","🧊 Slushy"], color:"#ff6eb4",glow:"rgba(255,80,160,0.7)",rgb:"255,110,180",img:"rif1.png"},
+  {name:"Watermelon Ice",tags:["🍉 Sandía","❄️ Ice"],   color:"#00ffaa",glow:"rgba(0,220,140,0.7)", rgb:"0,255,170",  img:"rif2.png"},
+  {name:"Miami Mint",    tags:["🌿 Menta","💚 Fresh"],  color:"#39ff88",glow:"rgba(30,200,100,0.7)",rgb:"57,255,136", img:"rif3.png"},
+  {name:"Cherry Strazz", tags:["🍒 Cereza","🍓 Fresa"], color:"#ff3c7e",glow:"rgba(255,30,100,0.7)",rgb:"255,60,126", img:"rif4.png"}
+];
+const rifSpecs=[{label:"Nicotina",value:"5%"},{label:"Niveles",value:"4 Niveles"},{label:"E-Liquid",value:"22 mL"},{label:"Batería",value:"900mAh USB-C"}];
+const selState={czar:null,crazy:null,fume:null};
+const heroRot={czar:{rx:0,ry:0,vx:0,vy:0},crazy:{rx:0,ry:0,vx:0,vy:0},fume:{rx:0,ry:0,vx:0,vy:0}};
+let activeBrand=null,rifCurrent=0,dragging=false,tiltTouch=false,rotX=0,rotY=0,velX=0,velY=0,lmx=0,lmy=0,tsx=0,tsy=0,rafId=null;
+
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById('screen-'+id).classList.add('active');window.scrollTo(0,0);}
+function goHome(){showScreen('home');activeBrand=null;}
+function openMenu(brand){showScreen(brand);activeBrand=brand;initHeroDrag(brand);}
+function openRifbar(){showScreen('rifbar');}
+
+['czar','crazy','fume'].forEach(brand=>{
+  const d=menuData[brand],grid=document.getElementById('fl-'+brand);
+  d.flavors.forEach((f,i)=>{
+    const btn=document.createElement('button');
+    btn.className='flavor-btn';btn.id=`flb-${brand}-${i}`;
+    btn.style.setProperty('--accent',d.accent);btn.style.setProperty('--accent-glow',d.glow);
+    btn.innerHTML=`<span class="flavor-emoji">${f.emoji}</span><span class="flavor-name">${f.name}</span>`;
+    btn.onclick=()=>selectFlavor(brand,i,f.emoji,f.name);
+    grid.appendChild(btn);
+  });
+});
+
+function selectFlavor(brand,idx,emoji,name){
+  document.querySelectorAll(`#fl-${brand} .flavor-btn`).forEach(b=>b.classList.remove('selected'));
+  document.getElementById(`flb-${brand}-${idx}`).classList.add('selected');
+  selState[brand]={name,emoji};
+  const disp=document.getElementById(`sel-${brand}`);
+  disp.querySelector('.sel-icon').textContent=emoji;
+  const val=disp.querySelector('.sel-value');val.textContent=name;val.style.color=menuData[brand].accent;
+  document.getElementById(`btn-${brand}`).disabled=false;
+}
+function sendWA(brand){
+  const s=selState[brand];if(!s)return;
+  const msg=encodeURIComponent(`¡Hola! Quiero pedir:\n\n📦 ${menuData[brand].name}\n${s.emoji} Sabor: ${s.name}\n\n¿Está disponible?`);
+  window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');
+}
+
+function applyHeroTransform(brand){
+  const img=document.getElementById('himg-'+brand);if(!img)return;
+  const h=heroRot[brand];
+  img.style.transform=`perspective(700px) rotateY(${h.ry}deg) rotateX(${-h.rx}deg) scale(1.05)`;
+}
+function heroInertia(brand){
+  const h=heroRot[brand];h.vx*=0.9;h.vy*=0.9;h.rx+=h.vx;h.ry+=h.vy;
+  h.rx=Math.max(-30,Math.min(30,h.rx));h.ry=Math.max(-45,Math.min(45,h.ry));
+  applyHeroTransform(brand);
+  if(Math.abs(h.vx)>0.04||Math.abs(h.vy)>0.04)requestAnimationFrame(()=>heroInertia(brand));
+}
+function initHeroDrag(brand){
+  const el=document.getElementById('hero-'+brand);if(!el||el._init)return;el._init=true;
+  let drag=false,lx=0,ly=0;
+  el.addEventListener('mousedown',e=>{drag=true;lx=e.clientX;ly=e.clientY;heroRot[brand].vx=0;heroRot[brand].vy=0;});
+  document.addEventListener('mousemove',e=>{if(!drag||activeBrand!==brand)return;heroRot[brand].vy+=(e.clientX-lx)*0.22;heroRot[brand].vx+=(e.clientY-ly)*0.22;heroRot[brand].ry+=heroRot[brand].vy;heroRot[brand].rx+=heroRot[brand].vx;heroRot[brand].rx=Math.max(-30,Math.min(30,heroRot[brand].rx));heroRot[brand].ry=Math.max(-45,Math.min(45,heroRot[brand].ry));lx=e.clientX;ly=e.clientY;applyHeroTransform(brand);});
+  document.addEventListener('mouseup',()=>{if(!drag)return;drag=false;heroInertia(brand);});
+  el.addEventListener('touchstart',e=>{drag=true;lx=e.touches[0].clientX;ly=e.touches[0].clientY;heroRot[brand].vx=0;heroRot[brand].vy=0;},{passive:true});
+  document.addEventListener('touchmove',e=>{if(!drag||activeBrand!==brand)return;const tx=e.touches[0].clientX,ty=e.touches[0].clientY;heroRot[brand].vy+=(tx-lx)*0.25;heroRot[brand].vx+=(ty-ly)*0.25;heroRot[brand].ry+=heroRot[brand].vy;heroRot[brand].rx+=heroRot[brand].vx;heroRot[brand].rx=Math.max(-30,Math.min(30,heroRot[brand].rx));heroRot[brand].ry=Math.max(-45,Math.min(45,heroRot[brand].ry));lx=tx;ly=ty;applyHeroTransform(brand);},{passive:true});
+  document.addEventListener('touchend',()=>{if(!drag)return;drag=false;heroInertia(brand);});
+}
+
+const track=document.getElementById('carouselTrack'),dotsNav=document.getElementById('dotsNav');
+rifFlavors.forEach((f,i)=>{
+  const slide=document.createElement('div');slide.className='rif-slide';
+  const specHtml=rifSpecs.map(s=>`<div class="rif-spec" style="--rgb:${f.rgb}"><div class="rif-spec-label">${s.label}</div><div class="rif-spec-value">${s.value}</div></div>`).join('');
+  slide.innerHTML=`<div class="device-scene" id="dw-${i}" style="--glow-color:${f.glow}"><img class="device-img" id="di-${i}" src="${f.img}" alt="${f.name}"><div class="holo-overlay"></div><div class="device-shine" id="ds-${i}"></div></div><div class="rif-flavor-card"><div class="rif-flavor-number">SABOR 0${i+1} / 05</div><div class="rif-flavor-name" style="--color:${f.color};--glow:${f.glow}">${f.name}</div><div class="rif-specs">${specHtml}</div></div>`;
+  track.appendChild(slide);
+  const dot=document.createElement('div');dot.className='dot'+(i===0?' active':'');dot.style.setProperty('--color',f.color);dot.onclick=()=>goTo(i);dotsNav.appendChild(dot);
+});
+function goTo(idx){rifCurrent=Math.max(0,Math.min(rifFlavors.length-1,idx));track.style.transform=`translateX(-${rifCurrent*100}%)`;document.querySelectorAll('.dot').forEach((d,i)=>{d.classList.toggle('active',i===rifCurrent);d.style.setProperty('--color',rifFlavors[i].color);});document.getElementById('counter').textContent=`${rifCurrent+1} / ${rifFlavors.length}`;document.getElementById('btnPrev').disabled=rifCurrent===0;document.getElementById('btnNext').disabled=rifCurrent===rifFlavors.length-1;rotX=0;rotY=0;velX=0;velY=0;applyDeviceTransform(rifCurrent);}
+function navigate(dir){goTo(rifCurrent+dir);}
+function applyDeviceTransform(idx){const img=document.getElementById(`di-${idx}`);if(!img)return;img.style.transform=`perspective(900px) rotateY(${rotY}deg) rotateX(${-rotX}deg) scale(1.04)`;const sh=document.getElementById(`ds-${idx}`);if(sh){sh.style.setProperty('--sx',`${50+rotY*1.5}%`);sh.style.setProperty('--sy',`${50-rotX*1.5}%`);}}
+function deviceInertia(){velX*=0.91;velY*=0.91;rotX+=velX;rotY+=velY;rotX=Math.max(-35,Math.min(35,rotX));rotY=Math.max(-50,Math.min(50,rotY));applyDeviceTransform(rifCurrent);if(Math.abs(velX)>0.04||Math.abs(velY)>0.04)rafId=requestAnimationFrame(deviceInertia);}
+document.addEventListener('mousedown',e=>{const dw=document.getElementById(`dw-${rifCurrent}`);if(!dw||!dw.contains(e.target))return;dragging=true;lmx=e.clientX;lmy=e.clientY;velX=0;velY=0;cancelAnimationFrame(rafId);});
+document.addEventListener('mousemove',e=>{if(!dragging)return;velY=(e.clientX-lmx)*0.25;velX=(e.clientY-lmy)*0.25;rotY+=velY;rotX+=velX;rotX=Math.max(-35,Math.min(35,rotX));rotY=Math.max(-50,Math.min(50,rotY));lmx=e.clientX;lmy=e.clientY;applyDeviceTransform(rifCurrent);});
+document.addEventListener('mouseup',()=>{if(!dragging)return;dragging=false;rafId=requestAnimationFrame(deviceInertia);});
+document.addEventListener('touchstart',e=>{const dw=document.getElementById(`dw-${rifCurrent}`);if(!dw||!dw.contains(e.target))return;dragging=true;tiltTouch=true;tsx=e.touches[0].clientX;tsy=e.touches[0].clientY;lmx=tsx;lmy=tsy;velX=0;velY=0;cancelAnimationFrame(rafId);},{passive:true});
+document.addEventListener('touchmove',e=>{if(!dragging||!tiltTouch)return;const tx=e.touches[0].clientX,ty=e.touches[0].clientY,dx=tx-tsx,dy=ty-tsy;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.5&&!rotY){tiltTouch=false;dragging=false;if(dx<0)navigate(1);else navigate(-1);return;}velY=(tx-lmx)*0.3;velX=(ty-lmy)*0.3;rotY+=velY;rotX+=velX;rotX=Math.max(-35,Math.min(35,rotX));rotY=Math.max(-50,Math.min(50,rotY));lmx=tx;lmy=ty;applyDeviceTransform(rifCurrent);},{passive:true});
+document.addEventListener('touchend',()=>{if(!dragging)return;dragging=false;tiltTouch=false;rafId=requestAnimationFrame(deviceInertia);});
+function sendRifWA(){const f=rifFlavors[rifCurrent];const msg=encodeURIComponent(`¡Hola! Quiero pedir:\n\n📦 RIFBAR MixPro 40,000 Puffs\n🎨 Sabor: ${f.name}\n\n¿Está disponible?`);window.open(`https://wa.me/${WA}?text=${msg}`,'_blank');}
+goTo(0);
+const se=document.getElementById('stars');
+for(let i=0;i<70;i++){const s=document.createElement('div');s.className='star';const sz=Math.random()*2.5+0.5;s.style.cssText=`left:${Math.random()*100}%;top:${Math.random()*100}%;width:${sz}px;height:${sz}px;--d:${(Math.random()*3+1.5).toFixed(1)}s;--op:${(Math.random()*0.6+0.2).toFixed(2)};animation-delay:${(Math.random()*4).toFixed(1)}s;`;se.appendChild(s);}
+</script>
+</body>
+</html>
